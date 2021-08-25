@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 var targetDeg = null
-var speed = 500
+var speed = 250
 var gravity = 300
 var gravityChangeSpeed = 0.1
 var up = 0.0
@@ -27,7 +27,6 @@ func find_closest(num, array):
 		if(diff < least_diff):
 			best_match = number
 			least_diff = diff
-		print(number," ",diff," ",least_diff," ",best_match)
 	return best_match
 
 func change_gravity(direction):
@@ -40,7 +39,7 @@ func change_gravity(direction):
 		if up > 360: # 361 == 1
 			up = 1
 	rotation_degrees = -up
-	$compassNeedle.rotation_degrees = up
+	$compassBase/compassNeedle.rotation_degrees = up
 	gravityDir.x = sin(deg2rad(up))
 	gravityDir.y = cos(deg2rad(up))
 
@@ -50,11 +49,10 @@ func no_gravity_change():
 		return
 	if targetDeg == null:
 		targetDeg = find_closest(up, snaps)
-	else:
-		if targetDeg > up:
-			change_gravity(1)
-		elif targetDeg < up:
-			change_gravity(0)
+	if targetDeg > up:
+		change_gravity(1)
+	elif targetDeg < up:
+		change_gravity(0)
 
 func get_input():
 	if Input.is_action_pressed("ui_left"):
@@ -70,7 +68,7 @@ func get_input():
 	elif Input.is_action_pressed("gravity_right"):
 		change_gravity(1)
 		targetDeg = null
-	elif frames % 2 == 0:
+	else:
 		no_gravity_change()
 
 func check_direction():

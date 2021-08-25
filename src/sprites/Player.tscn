@@ -19,9 +19,6 @@ height = 16.3573
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_group_": true
-}
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
@@ -33,14 +30,14 @@ shape = SubResource( 2 )
 [node name="Camera2D" type="Camera2D" parent="."]
 rotating = true
 current = true
-zoom = Vector2( 0.5, 0.5 )
+zoom = Vector2( 0.27, 0.27 )
 
 [node name="compassBase" type="Sprite" parent="."]
-position = Vector2( -133.414, 62.6542 )
-scale = Vector2( 1.40969, 1.40969 )
+position = Vector2( -154.578, 78.9647 )
+scale = Vector2( 0.959875, 0.959875 )
 texture = ExtResource( 3 )
 
-[node name="compassNeedle" type="Sprite" parent="."]
-position = Vector2( -133.414, 60 )
-scale = Vector2( 1.41, 1.41 )
+[node name="compassNeedle" type="Sprite" parent="compassBase"]
+position = Vector2( 0, -1.88282 )
+scale = Vector2( 1.00022, 1.00022 )
 texture = ExtResource( 4 )
