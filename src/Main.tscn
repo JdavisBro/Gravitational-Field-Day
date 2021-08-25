@@ -1,0 +1,7 @@
+[gd_scene format=2]
+
+[node name="this is not an actual" type="Node2D"]
+
+[node name="scene, it will be later" type="Node2D" parent="."]
+
+[node name="start level\\0 for now" type="Node2D" parent="scene, it will be later"]
