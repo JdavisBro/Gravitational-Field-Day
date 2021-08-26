@@ -56,16 +56,18 @@ func no_gravity_change():
 		change_gravity(0)
 
 func get_input():
-	if Input.is_action_pressed("ui_left"):
+	if Input.is_action_pressed("reset"):
+		get_tree().reload_current_scene()
+	if Input.is_action_pressed("left"):
 		velocity.x -= 1
-	if Input.is_action_pressed("ui_right"):
+	if Input.is_action_pressed("right"):
 		velocity.x += 1
-	if Input.is_action_pressed("ui_accept"):
-		velocity.y = -20
 	if is_on_floor():
 		velocity = velocity.normalized() * speed
 	else:
 		velocity = velocity.normalized() * speed / 3
+	if Input.is_action_pressed("ui_accept"):
+		velocity.y = -gravity+1
 	if Input.is_action_pressed("gravity_left"):
 		change_gravity(0)
 		targetDeg = null
@@ -91,11 +93,16 @@ func _physics_process(delta0):
 	frames += 1
 	delta = delta0
 	velocity = Vector2()
+	
 	get_input()
 
 	do_gravity()
 	
 	check_direction()
+
+	if $KillBox.get_overlapping_bodies():
+		get_tree().reload_current_scene()
+		return
 
 	newVel = Vector2()
 	newVel.x = velocity.x*sin(deg2rad(up+90)) - velocity.y*sin(deg2rad(up+180))
