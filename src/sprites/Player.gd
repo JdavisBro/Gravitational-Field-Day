@@ -15,6 +15,14 @@ var velocity = Vector2()
 var newVel = Vector2()
 var gravityDir = Vector2(0,-1)
 
+func debug_stuff():
+	if Input.is_action_pressed("DEBUG_pause_grav"):
+		velocity.y = 1
+	if Input.is_action_pressed("DEBUG_disable_snapping"):
+		targetDeg = up
+	if Input.is_action_just_released("DEBUG_disable_snapping"):
+		targetDeg = null
+
 func find_closest(num, array):
 	var best_match = null
 	var least_diff = null
@@ -66,8 +74,6 @@ func get_input():
 		velocity = velocity.normalized() * speed
 	else:
 		velocity = velocity.normalized() * speed / 3
-	if Input.is_action_pressed("ui_accept"):
-		velocity.y = -gravity+1
 	if Input.is_action_pressed("gravity_left"):
 		change_gravity(0)
 		targetDeg = null
@@ -78,10 +84,10 @@ func get_input():
 		no_gravity_change()
 
 func do_gravity():
-	if not $Hand.get_overlapping_areas():
-		velocity.y += gravity
-	else:
+	if $Hand.get_overlapping_areas() and not Input.is_action_pressed("down"):
 		velocity.y += rootMovement
+	else:
+		velocity.y += gravity
 
 func check_direction():
 	if velocity.x > 0:
@@ -103,6 +109,9 @@ func _physics_process(delta0):
 	if $KillBox.get_overlapping_bodies():
 		get_tree().reload_current_scene()
 		return
+
+	if OS.is_debug_build():
+		debug_stuff()
 
 	newVel = Vector2()
 	newVel.x = velocity.x*sin(deg2rad(up+90)) - velocity.y*sin(deg2rad(up+180))
