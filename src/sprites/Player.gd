@@ -64,7 +64,7 @@ func no_gravity_change():
 		change_gravity(0)
 
 func get_input():
-	if Input.is_action_pressed("reset"):
+	if Input.is_action_just_pressed("reset"):
 		get_tree().reload_current_scene()
 	if Input.is_action_pressed("left"):
 		velocity.x -= 1
@@ -84,8 +84,11 @@ func get_input():
 		no_gravity_change()
 
 func do_gravity():
-	if $Hand.get_overlapping_areas() and not Input.is_action_pressed("down"):
-		velocity.y += rootMovement
+	if $Hand.get_overlapping_bodies():
+		if Input.is_action_pressed("down"):
+			velocity.y += gravity/8
+		else:
+			velocity.y += rootMovement
 	else:
 		velocity.y += gravity
 
