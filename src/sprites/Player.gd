@@ -3,6 +3,7 @@ extends KinematicBody2D
 var targetDeg = null
 var speed = 250
 var gravity = 300
+var rootMovement = 1
 var gravityChangeSpeed = 0.1
 var up = 0.0
 var frames = 0
@@ -12,7 +13,7 @@ var snaps = [0, 45, 90, 135, 180, 225, 270, 315, 360]
 
 var velocity = Vector2()
 var newVel = Vector2()
-var gravityDir = Vector2()
+var gravityDir = Vector2(0,-1)
 
 func find_closest(num, array):
 	var best_match = null
@@ -40,8 +41,8 @@ func change_gravity(direction):
 			up = 1
 	rotation_degrees = -up
 	$compassBase/compassNeedle.rotation_degrees = up
-	gravityDir.x = sin(deg2rad(up))
-	gravityDir.y = cos(deg2rad(up))
+	gravityDir.x = -sin(deg2rad(up))
+	gravityDir.y = -cos(deg2rad(up))
 
 func no_gravity_change():
 	if up in snaps:
@@ -49,7 +50,7 @@ func no_gravity_change():
 		return
 	if targetDeg == null:
 		targetDeg = find_closest(up, snaps)
-	if targetDeg > up:
+	elif targetDeg > up:
 		change_gravity(1)
 	elif targetDeg < up:
 		change_gravity(0)
@@ -61,7 +62,10 @@ func get_input():
 		velocity.x += 1
 	if Input.is_action_pressed("ui_accept"):
 		velocity.y = -20
-	velocity = velocity.normalized() * speed
+	if is_on_floor():
+		velocity = velocity.normalized() * speed
+	else:
+		velocity = velocity.normalized() * speed / 3
 	if Input.is_action_pressed("gravity_left"):
 		change_gravity(0)
 		targetDeg = null
@@ -70,6 +74,12 @@ func get_input():
 		targetDeg = null
 	else:
 		no_gravity_change()
+
+func do_gravity():
+	if not $Hand.get_overlapping_areas():
+		velocity.y += gravity
+	else:
+		velocity.y += rootMovement
 
 func check_direction():
 	if velocity.x > 0:
@@ -83,7 +93,7 @@ func _physics_process(delta0):
 	velocity = Vector2()
 	get_input()
 
-	velocity.y += gravity
+	do_gravity()
 	
 	check_direction()
 
